@@ -10,115 +10,114 @@
         :root { --primary: #6c5ce7; --accent: #fdcb6e; --danger: #ff7675; --success: #55efc4; }
         
         body { 
-            font-family: 'PingFang TC', 'Microsoft JhengHei', cursive, sans-serif; 
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
             background: radial-gradient(circle, #6c5ce7 0%, #4834d4 100%);
-            color: white; margin: 0; padding-top: 20px; 
+            color: white; margin: 0; padding: 20px 0;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh; 
         }
 
-        /* 1. 活潑可愛標題 */
+        /* 5. 標題與圖標 */
+        .header-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .event-logo { width: 50px; height: 50px; object-fit: contain; }
         .event-title { 
-            font-size: 3rem; font-weight: 900; 
-            color: var(--accent); 
-            text-shadow: 4px 4px 0px #d35400, 8px 8px 20px rgba(0,0,0,0.3);
-            margin: 20px 0; letter-spacing: 4px;
-            animation: titleFloat 2s ease-in-out infinite;
-        }
-        @keyframes titleFloat {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50% { transform: translateY(-10px) rotate(2deg); }
+            font-size: 2.5rem; font-weight: 900; color: var(--accent); 
+            text-shadow: 3px 3px 0px #d35400; margin: 0; letter-spacing: 2px;
         }
 
         .card { 
             background: white; color: #2d3436; padding: 30px; 
             border-radius: 30px; width: 90%; max-width: 500px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3); 
-            border: 8px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 8px solid rgba(255,255,255,0.2);
+            text-align: center;
         }
 
         .hidden { display: none !important; }
 
-        /* 遊戲箱子 */
-        .emoji-box { 
-            font-size: 90px; margin: 20px 0; min-height: 150px; 
-            display: flex; justify-content: center; align-items: center; 
-            background: #f1f2f6; border-radius: 20px;
-            box-shadow: inset 0 5px 10px rgba(0,0,0,0.1);
-        }
+        /* 說明頁樣式 */
+        .instruction-card { text-align: left; background: #f9f9f9; padding: 15px; border-radius: 15px; color: #444; line-height: 1.6; margin-bottom: 15px; }
+        .qr-code { width: 200px; height: 200px; margin: 15px auto; display: block; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        input { 
-            padding: 15px; font-size: 1.2rem; width: 85%; 
-            margin: 10px 0; border: 3px solid #dfe6e9; border-radius: 15px;
-            text-align: center;
-        }
-
+        .emoji-box { font-size: 80px; margin: 20px 0; min-height: 130px; display: flex; justify-content: center; align-items: center; background: #f1f2f6; border-radius: 20px; }
+        
+        input { padding: 12px; font-size: 1.1rem; width: 80%; margin: 10px 0; border: 3px solid #dfe6e9; border-radius: 12px; text-align: center; }
+        
         button { 
             background: var(--accent); color: #d35400; border: none; 
-            padding: 15px 30px; font-size: 1.3rem; border-radius: 50px; 
-            cursor: pointer; font-weight: 900; box-shadow: 0 5px 0 #e67e22;
-            transition: 0.1s; margin: 10px;
+            padding: 12px 25px; font-size: 1.1rem; border-radius: 50px; 
+            cursor: pointer; font-weight: 900; box-shadow: 0 5px 0 #e67e22; margin: 10px;
         }
         button:active { transform: translateY(3px); box-shadow: 0 2px 0 #e67e22; }
 
-        /* 2. 主持人專用重置按鈕樣式 */
-        .host-reset-bar {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 10px 20px; border-radius: 50px;
-            margin-bottom: 20px; display: flex; align-items: center; gap: 15px;
+        /* 1. 右下角管理員模式 */
+        .host-fixed-tools {
+            position: fixed; bottom: 15px; right: 15px;
+            background: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 15px;
+            font-size: 0.8rem; display: flex; flex-direction: column; gap: 5px; z-index: 100;
         }
-        .btn-mini-reset { 
-            background: var(--danger); color: white; padding: 5px 15px; 
-            font-size: 0.9rem; box-shadow: 0 3px 0 #c0392b; 
-        }
+        .btn-danger-sm { background: var(--danger); font-size: 0.7rem; padding: 5px 10px; color: white; box-shadow: 0 3px 0 #c0392b; }
 
-        .announcement { 
-            background: var(--success); color: #006266; padding: 15px; 
-            border-radius: 15px; margin: 15px 0; font-weight: bold; font-size: 1.2rem;
-            border: 2px dashed #009432;
-        }
-
-        .lb-item { 
-            display: flex; justify-content: space-between; padding: 12px; 
-            border-bottom: 2px solid #f1f2f6; font-size: 1.3rem; font-weight: bold;
-        }
+        .announcement { background: var(--success); color: #006266; padding: 15px; border-radius: 15px; margin: 15px 0; font-weight: bold; }
+        .lb-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 2px solid #f1f2f6; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <div class="event-title">活動名稱</div>
+    <div class="header-container">
+        <img src="logo.png" alt="" class="event-logo" onerror="this.style.display='none'">
+        <div class="event-title">活動名稱</div>
+    </div>
 
-    <div id="host-global-tools" class="host-reset-bar hidden">
-        <span>👑 管理員模式</span>
-        <button onclick="hardResetGame()" class="btn-mini-reset">🔄 重置整個遊戲</button>
+    <div id="host-global-tools" class="host-fixed-tools hidden">
+        <span>👑 管理權限</span>
+        <button onclick="hardResetGame()" class="btn-danger-sm">🔄 重置遊戲</button>
     </div>
 
     <div class="card">
         <div id="view-login">
-            <h2 style="color: var(--primary);">準備好搶答了嗎？</h2>
-            <input type="text" id="username" placeholder="輸入你的大名">
-            <button id="btn-join">GO! 進入遊戲</button>
+            <h2 style="color: var(--primary);">歡迎參加搶答！</h2>
+            <input type="text" id="username" placeholder="請輸入姓名">
+            <button id="btn-join">下一頁</button>
         </div>
 
-        <div id="view-waiting" class="hidden">
-            <h3>哈囉 <span id="display-name" style="color:var(--primary);"></span></h3>
-            <p>大家坐好，準備要開始囉！</p>
-            <div id="host-ctrl" class="hidden">
-                <button id="btn-start" style="background:#55efc4; color:#006266; box-shadow:0 5px 0 #009432;">🚀 啟動遊戲</button>
+        <div id="view-setup" class="hidden">
+            <h2 style="color: var(--primary);">遊戲設定</h2>
+            <p>請設定本次欲抽取的題數 (1~34)：</p>
+            <input type="number" id="q-count" value="10" min="1" max="34">
+            <br>
+            <button id="btn-to-instruction">下一步：進入說明</button>
+        </div>
+
+        <div id="view-instruction" class="hidden">
+            <h2 style="color: var(--primary);">遊戲說明</h2>
+            <div class="instruction-card">
+                <b>👀 規則：</b>可能是「眼」、「睛」、「看」、「目」、「望」...等的同音字。<br><br>
+                <b>💡 範例：</b><br>
+                題目：👀🎵 ➔ 答案：<b>觀音</b><br>
+                題目：⬇️🏘️ ➔ 答案：<b>南庄</b>
+            </div>
+            
+            <p style="font-size: 0.9rem; margin-bottom: 5px;">掃描加入遊戲：</p>
+            <img src="qrcode.png" alt="請上傳 qrcode.png" class="qr-code" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+window.location.href.split('?')[0]">
+            
+            <p id="wait-player-msg">請各位參賽者準備就緒...</p>
+            
+            <div id="host-start-btn" class="hidden">
+                <button id="btn-real-start" style="background:var(--success); color:#006266; box-shadow:0 5px 0 #009432;">🎮 正式開始搶答！</button>
             </div>
         </div>
 
         <div id="view-game" class="hidden">
-            <div id="q-header" style="font-weight: bold; font-size: 1.1rem;">正在出題...</div>
+            <div id="q-header" style="font-weight: bold;"></div>
             <div id="q-emoji" class="emoji-box"></div>
             
             <div id="player-zone" class="hidden">
-                <input type="text" id="ans-input" placeholder="答案是什麼？">
-                <button id="btn-submit">我先搶答！</button>
+                <input type="text" id="ans-input" placeholder="答案是？">
+                <button id="btn-submit">送出！</button>
                 <p id="feedback" style="color:var(--danger); font-weight:bold;"></p>
             </div>
 
             <div id="win-notification" class="hidden">
-                <div class="announcement">🎊 太厲害了！<br><span id="win-player-name"></span> 答對了！</div>
+                <div class="announcement">🎉 <span id="win-player-name"></span> 搶到了！</div>
             </div>
 
             <div id="ans-reveal" class="hidden" style="background:#e1f5fe; padding:15px; border-radius:20px;">
@@ -126,15 +125,15 @@
             </div>
 
             <div id="host-actions" class="hidden">
-                <button id="btn-reveal" style="background:var(--accent);">👀 揭曉答案</button>
+                <button id="btn-reveal">揭曉答案</button>
                 <button id="btn-next" class="hidden" style="background:var(--primary); color:white; box-shadow: 0 5px 0 #4834d4;">下一題 ➔</button>
             </div>
         </div>
 
         <div id="view-result" class="hidden">
-            <h2 style="color:var(--primary);">🏆 榮譽榜</h2>
+            <h2 style="color:var(--primary);">🏆 最終排行</h2>
             <div id="leaderboard"></div>
-            <button onclick="location.reload()" style="background:#dfe6e9; color:#636e72; box-shadow:0 5px 0 #b2bec3;">回首頁</button>
+            <button onclick="location.reload()">回首頁</button>
         </div>
     </div>
 
@@ -174,37 +173,40 @@
             document.getElementById(id).classList.remove('hidden');
         }
 
-        // 2. 全局重置功能：清空所有分數與遊戲狀態
         function hardResetGame() {
-            if(confirm("⚠ 注意：這會刪除所有玩家分數並重新開始！確定嗎？")) {
-                db.ref('/').remove().then(() => {
-                    window.location.href = window.location.pathname + (isHost ? "?host=true" : "");
-                });
-            }
+            if(confirm("確定重置所有狀態？")) db.ref('/').remove().then(() => location.href=location.pathname+(isHost?"?host=true":""));
         }
 
         document.getElementById('btn-join').onclick = function() {
             myName = document.getElementById('username').value.trim();
             if(!myName) return alert("請輸入名字");
-            document.getElementById('display-name').innerText = myName;
-            goTo('view-waiting');
+            document.getElementById('display-name');
+            
             if(isHost) {
                 document.getElementById('host-global-tools').classList.remove('hidden');
-                document.getElementById('host-ctrl').classList.remove('hidden');
+                goTo('view-setup'); // 2. 主持人先去設定頁
+            } else {
+                goTo('view-instruction'); // 參賽者直接去說明頁
             }
         };
 
-        document.getElementById('btn-start').onclick = function() {
-            const shuffled = questions.sort(() => 0.5 - Math.random()).slice(0, 10);
+        // 2. 設定完題數去說明頁
+        document.getElementById('btn-to-instruction').onclick = function() {
+            goTo('view-instruction');
+            document.getElementById('host-start-btn').classList.remove('hidden');
+            document.getElementById('wait-player-msg').innerText = "準備好後請按下方按鈕開始";
+        };
+
+        // 4. 正式開始按鈕
+        document.getElementById('btn-real-start').onclick = function() {
+            const count = parseInt(document.getElementById('q-count').value) || 10;
+            const shuffled = questions.sort(() => 0.5 - Math.random()).slice(0, count);
             db.ref('game').set({ status: 'playing', qs: shuffled, idx: 0, winner: "", show: false });
         };
 
         db.ref('game').on('value', (snap) => {
             const game = snap.val();
-            if(!game) {
-                if(myName) goTo('view-waiting');
-                return;
-            }
+            if(!game) return;
             if(game.status === 'playing') {
                 goTo('view-game');
                 const cur = game.qs[game.idx];
@@ -229,7 +231,6 @@
                     document.getElementById('ans-reveal').classList.add('hidden');
                     document.getElementById('host-actions').classList.add('hidden');
                     document.getElementById('ans-input').value = "";
-                    document.getElementById('feedback').innerText = "";
                 }
             } else if(game.status === 'finished') {
                 goTo('view-result');
@@ -253,7 +254,7 @@
                     db.ref('game/winner').set(myName);
                     db.ref('players/' + myName).transaction(s => (s || 0) + 10);
                 } else if(val) {
-                    document.getElementById('feedback').innerText = "❌ 答錯了，再想想！";
+                    document.getElementById('feedback').innerText = "❌ 不對喔！";
                 }
             });
         };
@@ -262,11 +263,8 @@
         document.getElementById('btn-next').onclick = () => {
             db.ref('game').once('value', snap => {
                 const g = snap.val();
-                if(g.idx + 1 < g.qs.length) {
-                    db.ref('game').update({idx: g.idx + 1, winner: "", show: false});
-                } else {
-                    db.ref('game/status').set('finished');
-                }
+                if(g.idx + 1 < g.qs.length) db.ref('game').update({idx: g.idx + 1, winner: "", show: false});
+                else db.ref('game/status').set('finished');
             });
         };
     </script>
