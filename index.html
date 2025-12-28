@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emoji 搶答正式版</title>
+
+<style>
+:root { --p:#46178f; --a:#ffa600; }
+body{
+    font-family:sans-serif;
+    background:var(--p);
+    color:white;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    text-align:center;
+}
+.card{
+    background:white;
+    color:#333;
+    padding:25px;
+    border-radius:15px;
+    width:90%;
+    max-width:500px;
+}
+.hidden{ display:none !important; }
+.emoji-box{
+    font-size:70px;
+    margin:20px 0;
+    min-height:100px;
+    line-height:100px;
+}
+input{
+    padding:12px;
+    width:80%;
+    margin:10px 0;
+    border:2px solid #ddd;
+    border-radius:8px;
+}
+button{
+    background:var(--a);
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div id="debug-info" style="position:fixed;top:0;font-size:10px;color:#aaa;">Loading...</div>
+
+<div class="card">
+
+<!-- LOGIN -->
+<div id="view-login">
+    <h2>👀 Emoji 諧音大賽</h2>
+    <input id="username" placeholder="輸入姓名">
+    <button id="btn-join">加入</button>
+</div>
+
+<!-- WAIT -->
+<div id="view-wait" class="hidden">
+    <h3>您好 <span id="display-name"></span></h3>
+    <p>等待主持人開始…</p>
+    <div id="host-ctrl" class="hidden">
+        <button id="btn-start">開始遊戲</button>
+    </div>
+</div>
+
+<!-- GAME -->
+<div id="view-game" class="hidden">
+    <div id="q-info"></div>
+    <div id="q-emoji" class="emoji-box"></div>
+
+    <div id="player-zone">
+        <input id="ans-input" placeholder="答案？">
+        <button id="btn-submit">送出</button>
+        <p id="msg" style="color:red;"></p>
+    </div>
+
+    <div id="ans-reveal" class="hidden">
+        <h2 id="correct-ans" style="color:blue;"></h2>
+        <p id="winner-name"></p>
+    </div>
+
+    <div id="host-actions" class="hidden">
+        <button id="btn-reveal">揭曉</button>
+        <button id="btn-next" class="hidden">下一題</button>
+    </div>
+</div>
+
+<!-- RESULT -->
+<div id="view-result" class="hidden">
+    <h2>🏆 最終排行</h2>
+    <div id="leaderboard"></div>
+    <button onclick="location.reload()">重玩</button>
+</div>
+
+</div>
+
+<!-- Firebase v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+document.getElementById("debug-info").innerText="JS Loaded";
+
+const firebaseConfig={
+ apiKey:"AIzaSyAGKM7UL7hYCijHzS7lbPuHi-2M8Y9gZ7U",
+ authDomain:"kahootclone-94620.firebaseapp.com",
+ databaseURL:"https://kahootclone-94620-default-rtdb.asia-southeast1.firebasedatabase.app",
+ projectId:"kahootclone-94620",
+ storageBucket:"kahootclone-94620.appspot.com",
+ messagingSenderId:"173514871128",
+ appId:"1:173514871128:web:6ca8ccb012ba5a49b7d52d"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+const isHost=new URLSearchParams(location.search).get("host")==="true";
+let myName="";
+
+document.getElementById("debug-info").innerText="Firebase Ready | "+(isHost?"HOST":"PLAYER");
+
+const questions=[
+ {emoji:"🐲♨️",answer:"龍潭"},
+ {emoji:"5️⃣⛰️",answer:"五峰"},
+ {emoji:"🪑橋",answer:"板橋"},
+ {emoji:"🆕🛒",answer:"新店"},
+ {emoji:"3️⃣⛰️",answer:"三峽"},
+ {emoji:"🥇⛰️",answer:"金山"},
+ {emoji:"5️⃣🦴",answer:"五股"},
+ {emoji:"7️⃣🚧",answer:"七堵"},
+ {emoji:"💎⛰️",answer:"寶山"},
+ {emoji:"🦌⚓",answer:"鹿港"}
+];
+
+function go(id){
+ document.querySelectorAll(".card>div").forEach(d=>d.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+}
+
+btnJoin.onclick=()=>{
+ myName=username.value.trim();
+ if(!myName) return alert("請輸入姓名");
+ display-name.innerText=myName;
+ go("view-wait");
+ if(isHost){
+  host-ctrl.classList.remove("hidden");
+  db.ref("game").remove();
+ }
+};
+
+btn-start.onclick=()=>{
+ const qs=[...questions].sort(()=>0.5-Math.random());
+ db.ref("game").set({
+  status:"playing",
+  qs:qs,
+  idx:0,
+  winner:"",
+  show:false
+ });
+};
+
+db.ref("game").on("value",snap=>{
+ const g=snap.val();
+ if(!g) return;
+
+ if(g.status==="playing"){
+  go("view-game");
+  const q=g.qs[g.idx];
+  q-info.innerText=`第 ${g.idx+1} 題`;
+  q-emoji.innerText=q.emoji;
+
+  if(g.winner){
+   player-zone.classList.add("hidden");
+   if(isHost){
+    host-actions.classList.remove("hidden");
+    btn-next.classList.toggle("hidden",!g.show);
+   }
+   if(g.show){
+    ans-reveal.classList.remove("hidden");
+    correct-ans.innerText="答案："+q.answer;
+    winner-name.innerText="贏家："+g.winner;
+   }
+  }else{
+   player-zone.classList.remove("hidden");
+   ans-reveal.classList.add("hidden");
+   host-actions.classList.add("hidden");
+  }
+ }
+
+ if(g.status==="finished"){
+  go("view-result");
+  db.ref("players").once("value",s=>{
+   const ps=s.val()||{};
+   leaderboard.innerHTML=Object.keys(ps)
+    .sort((a,b)=>ps[b]-ps[a])
+    .map(n=>`<div>${n}: ${ps[n]}</div>`).join("");
+  });
+ }
+});
+
+btn-submit.onclick=()=>{
+ const ans=ans-input.value.trim();
+ db.ref("game").once("value",snap=>{
+  const g=snap.val();
+  if(ans===g.qs[g.idx].answer && !g.winner){
+   db.ref("game").update({winner:myName});
+   db.ref("players/"+myName).transaction(s=>(s||0)+10);
+  }else{
+   msg.innerText="再試試！";
+  }
+ });
+};
+
+btn-reveal.onclick=()=>db.ref("game").update({show:true});
+btn-next.onclick=()=>{
+ db.ref("game").once("value",snap=>{
+  const g=snap.val();
+  if(g.idx+1<g.qs.length){
+   db.ref("game").update({idx:g.idx+1,winner:"",show:false});
+  }else{
+   db.ref("game").update({status:"finished"});
+  }
+ });
+};
+</script>
+</body>
+</html>
