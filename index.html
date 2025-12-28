@@ -3,89 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emoji 搶答大賽 - 終極穩定版</title>
+    <title>Emoji 搶答大賽</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
-        :root { --primary: #46178f; --accent: #ffa600; --bg: #f4f4f9; }
-        body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; background: var(--primary); color: white; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; color: #333; padding: 30px; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); text-align: center; }
+        :root { --primary: #46178f; --accent: #ffa600; --danger: #ff4d4d; }
+        body { font-family: 'Comic Sans MS', 'Chalkboard SE', 'Microsoft JhengHei', sans-serif; background: var(--primary); color: white; margin: 0; padding-top: 50px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; text-align: center; }
+        
+        /* 2. 活動名稱標題 */
+        .event-title { font-size: 2.5rem; font-weight: 900; color: var(--accent); text-shadow: 3px 3px 0px #fff; margin-bottom: 20px; letter-spacing: 2px; }
+        
+        .card { background: white; color: #333; padding: 25px; border-radius: 20px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; }
         .hidden { display: none !important; }
-        .emoji-large { font-size: 80px; margin: 20px 0; display: block; min-height: 120px; line-height: 120px; }
-        input[type="text"], input[type="number"] { padding: 15px; font-size: 1.2rem; width: 85%; border: 2px solid #ddd; border-radius: 10px; margin: 10px 0; box-sizing: border-box; }
-        button { background: var(--accent); color: white; border: none; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; border-radius: 10px; cursor: pointer; transition: 0.3s; margin: 10px; }
-        button:hover { transform: scale(1.05); }
-        .instruction-box { background: #eee; padding: 15px; border-radius: 10px; text-align: left; font-size: 0.9rem; line-height: 1.6; margin-bottom: 15px; }
-        #debug-info { position: fixed; top: 10px; left: 10px; font-size: 12px; color: rgba(255,255,255,0.5); z-index: 999; }
-        #leaderboard { margin-top: 20px; text-align: left; }
-        .lb-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; }
+        .emoji-box { font-size: 85px; margin: 15px 0; min-height: 130px; display: flex; justify-content: center; align-items: center; background: #f8f9fa; border-radius: 15px; }
+        input { padding: 12px; font-size: 1.1rem; width: 80%; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; }
+        button { background: var(--accent); color: white; border: none; padding: 12px 25px; font-size: 1.1rem; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:active { transform: scale(0.95); }
+        .btn-reset { background: var(--danger); font-size: 0.9rem; margin-top: 10px; }
+        
+        #debug-info { position: fixed; bottom: 5px; right: 5px; font-size: 10px; color: rgba(255,255,255,0.3); }
+        .announcement { background: #d4edda; color: #155724; padding: 10px; border-radius: 10px; margin: 10px 0; font-weight: bold; border: 1px solid #c3e6cb; animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-5px); } }
+        .lb-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; font-size: 1.2rem; }
     </style>
 </head>
 <body>
 
-    <div id="debug-info">等待腳本載入...</div>
+    <div class="event-title">活動名稱</div>
+
+    <div id="debug-info">Checking...</div>
 
     <div class="card">
         <div id="view-login">
-            <h2>👀 Emoji 諧音大賽</h2>
-            <div class="instruction-box">
-                <b>遊戲說明：</b><br>
-                看圖猜台灣地名！👀 可能是眼、看、目、望...<br>
-                範例：👀🎵 ➔ <b>觀音</b> | ⬇️🏘️ ➔ <b>南庄</b>
-            </div>
+            <h2>👋 歡迎參加！</h2>
             <input type="text" id="username" placeholder="請輸入您的姓名">
             <button id="btn-join">進入遊戲</button>
         </div>
 
         <div id="view-waiting" class="hidden">
-            <h3>您好，<span id="display-name"></span>！</h3>
-            <p>等待主持人開啟題目...</p>
-            <div id="host-ctrl" class="hidden" style="border-top: 2px solid #eee; padding-top: 20px; margin-top:20px; background:#f9f0ff; border-radius:10px;">
-                <p style="color: #46178f; font-weight: bold;">[ 主持人控制台 ]</p>
-                <label>抽題數量：</label>
-                <input type="number" id="q-count" value="10" min="1" max="35" style="width: 70px;"><br>
-                <button id="btn-start">正式開始搶答</button>
+            <h3>您好 <span id="display-name"></span></h3>
+            <p id="wait-msg">等待主持人開啟題目...</p>
+            <div id="host-ctrl" class="hidden" style="border-top: 2px solid #eee; margin-top: 15px; padding-top: 15px;">
+                <button id="btn-start" style="background:#28a745;">🚀 開始第一題</button><br>
+                <button id="btn-hard-reset" class="btn-reset">⚠️ 清空資料庫並重來</button>
             </div>
         </div>
 
         <div id="view-game" class="hidden">
-            <div id="q-header" style="font-weight: bold; color: #666;">載入中...</div>
-            <div id="q-emoji" class="emoji-large"></div>
+            <div id="q-header" style="color:#888; font-weight: bold;"></div>
+            <div id="q-emoji" class="emoji-box"></div>
             
-            <div id="player-zone">
-                <input type="text" id="ans-input" placeholder="請輸入答案">
-                <button id="btn-submit">送出答案</button>
-                <div id="feedback" style="color:red; margin-top:10px; font-weight:bold;"></div>
+            <div id="player-zone" class="hidden">
+                <input type="text" id="ans-input" placeholder="答案是？">
+                <button id="btn-submit">送出搶答</button>
+                <p id="feedback" style="color:red; font-weight:bold;"></p>
             </div>
 
-            <div id="win-zone" class="hidden">
-                <div style="font-size: 1.5rem; color: #28a745; font-weight: bold;">🎉 您搶到這題了！</div>
-                <p>請等主持人切換...</p>
+            <div id="win-notification" class="hidden">
+                <div class="announcement">🎉 <span id="win-player-name"></span> 搶答成功！</div>
             </div>
 
-            <div id="ans-reveal" class="hidden" style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 10px;">
-                <h2 id="correct-ans-text" style="color: blue; margin: 5px 0;"></h2>
-                <p>本題得主：<span id="winner-name-display" style="font-weight: bold; color: green;"></span></p>
+            <div id="ans-reveal" class="hidden" style="background:#e7f3ff; padding:15px; border-radius:15px; margin-top:10px;">
+                <h2 id="correct-ans" style="color:blue; margin:5px 0;"></h2>
+                <p>這一題得主是：<span id="winner-name" style="font-weight:bold; color:green;"></span></p>
             </div>
 
-            <div id="host-actions" class="hidden" style="margin-top:20px; border-top: 1px solid #ccc; padding-top:10px;">
-                <button id="btn-reveal" style="background:#28a745;">揭曉答案</button>
-                <button id="btn-next" class="hidden" style="background:#46178f;">下一題</button>
+            <div id="host-actions" class="hidden" style="margin-top:15px;">
+                <button id="btn-reveal">揭曉答案</button>
+                <button id="btn-next" class="hidden" style="background:var(--primary);">下一題 ➡️</button>
             </div>
         </div>
 
         <div id="view-result" class="hidden">
             <h2>🏆 最終排行</h2>
             <div id="leaderboard"></div>
-            <button onclick="location.reload()">重新開始</button>
+            <button onclick="location.reload()" style="margin-top:20px;">回首頁</button><br>
+            <button id="btn-result-reset" class="btn-reset">☢️ 徹底重置遊戲</button>
         </div>
     </div>
 
     <script>
-        const debug = document.getElementById('debug-info');
-        
-        // 1. Firebase 配置
-        const firebaseConfig = {
+        const config = {
             apiKey: "AIzaSyAGKM7UL7hYCijHzS7lbPuHi-2M8Y9gZ7U",
             authDomain: "kahootclone-94620.firebaseapp.com",
             databaseURL: "https://kahootclone-94620-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -95,20 +93,13 @@
             appId: "1:173514871128:web:6ca8ccb012ba5a49b7d52d"
         };
 
-        // 2. 初始化
-        try {
-            firebase.initializeApp(firebaseConfig);
-            var db = firebase.database();
-            debug.innerText = "Firebase 連線成功";
-        } catch (e) {
-            debug.innerText = "連線失敗: " + e.message;
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const isHost = urlParams.get('host') === 'true';
+        firebase.initializeApp(config);
+        const db = firebase.database();
+        const isHost = window.location.search.includes('host=true');
         let myName = "";
 
-        // 3. 完整題庫
+        document.getElementById('debug-info').innerText = isHost ? "Mode: Host" : "Mode: Player";
+
         const questions = [
             { emoji: "🐲 ♨️", answer: "龍潭" }, { emoji: "5️⃣⛰️", answer: "五峰" }, { emoji: "🔟0️⃣0️⃣0️⃣🌸", answer: "萬華" },
             { emoji: "🪑橋", answer: "板橋" }, { emoji: "🆕🏠", answer: "新屋" }, { emoji: "🆕🛒", answer: "新店" },
@@ -118,69 +109,75 @@
             { emoji: "2️⃣🌲", answer: "二林" }, { emoji: "2️⃣💧", answer: "二水" }, { emoji: "🎋⛰️", answer: "竹山" },
             { emoji: "4️⃣♨️", answer: "四湖" }, { emoji: "🐘🌲", answer: "大林" }, { emoji: "🆕⚓", answer: "新港" },
             { emoji: "6️⃣🦵", answer: "六腳" }, { emoji: "🦌🌱", answer: "鹿草" }, { emoji: "🧂💧", answer: "鹽水" },
-            { emoji: "3️⃣🧑‍🤝‍🧑", answer: "三民" }, { emoji: "🚩⛰️", answer: "旗山" }, { emoji: "6️⃣🐢", answer: "六龜" },
+            { emoji: "3️⃣🧑‍🤝‍🧑", answer: "三民" }, { emoji: "旗🖌️", answer: "旗山" }, { emoji: "6️⃣🐢", answer: "六龜" },
             { emoji: "➡️⚓", answer: "東港" }, { emoji: "♾️🌸", answer: "恆春" }, { emoji: "🦁", answer: "獅子" },
             { emoji: "🌺", answer: "牡丹" }, { emoji: "3️⃣⭐", answer: "三星" }, { emoji: "🐘⚔️", answer: "大武" },
             { emoji: "7️⃣ 🧜", answer: "七美" }
         ];
 
         function goTo(id) {
-            document.querySelectorAll('.card > div').forEach(d => d.classList.add('hidden'));
+            document.querySelectorAll('.card > div').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
         }
 
-        // 登入邏輯
+        // 3. 刪除資料庫邏輯
+        function hardResetGame() {
+            if(confirm("確定要刪除所有遊戲紀錄與分數並重新開始嗎？")) {
+                db.ref('/').remove().then(() => location.reload());
+            }
+        }
+        document.getElementById('btn-hard-reset').onclick = hardResetGame;
+        document.getElementById('btn-result-reset').onclick = hardResetGame;
+
         document.getElementById('btn-join').onclick = function() {
             myName = document.getElementById('username').value.trim();
-            if(!myName) return alert("請輸入姓名");
+            if(!myName) return alert("請輸入名字");
             document.getElementById('display-name').innerText = myName;
             goTo('view-waiting');
             if(isHost) {
                 document.getElementById('host-ctrl').classList.remove('hidden');
-                db.ref('game').remove(); // 主持人進入自動重置
+                document.getElementById('wait-msg').innerText = "管理員您好，請準備開始題目";
             }
         };
 
-        // 開始遊戲
         document.getElementById('btn-start').onclick = function() {
-            const count = parseInt(document.getElementById('q-count').value) || 10;
-            const shuffled = questions.sort(function() { return 0.5 - Math.random(); }).slice(0, count);
-            db.ref('game').set({
-                status: 'playing',
-                qs: shuffled,
-                idx: 0,
-                winner: "",
-                show: false
-            });
+            const shuffled = questions.sort(() => 0.5 - Math.random()).slice(0, 10);
+            db.ref('game').set({ status: 'playing', qs: shuffled, idx: 0, winner: "", show: false });
         };
 
-        // 資料同步
-        db.ref('game').on('value', function(snap) {
+        db.ref('game').on('value', (snap) => {
             const game = snap.val();
-            if(!game) return;
-
+            if(!game) {
+                if(myName) goTo('view-waiting');
+                return;
+            }
             if(game.status === 'playing') {
                 goTo('view-game');
                 const cur = game.qs[game.idx];
-                document.getElementById('q-header').innerText = "第 " + (game.idx + 1) + " 題 / 共 " + game.qs.length + " 題";
                 document.getElementById('q-emoji').innerText = cur.emoji;
+                document.getElementById('q-header').innerText = "第 " + (game.idx + 1) + " 題";
 
                 if(game.winner) {
+                    // 1. 有人答對時的處理
                     document.getElementById('player-zone').classList.add('hidden');
-                    document.getElementById('win-zone').classList.toggle('hidden', game.winner !== myName);
+                    document.getElementById('win-notification').classList.remove('hidden');
+                    document.getElementById('win-player-name').innerText = game.winner;
+                    
                     if(isHost) {
                         document.getElementById('host-actions').classList.remove('hidden');
-                        if(game.show) document.getElementById('btn-next').classList.remove('hidden');
-                        else document.getElementById('btn-next').classList.add('hidden');
+                        document.getElementById('btn-next').classList.toggle('hidden', !game.show);
                     }
                     if(game.show) {
                         document.getElementById('ans-reveal').classList.remove('hidden');
-                        document.getElementById('correct-ans-text').innerText = "答案：" + cur.answer;
-                        document.getElementById('winner-name-display').innerText = game.winner;
+                        document.getElementById('correct-ans').innerText = "答案：" + cur.answer;
+                        document.getElementById('winner-name').innerText = game.winner;
                     }
                 } else {
-                    document.getElementById('player-zone').classList.remove('hidden');
-                    document.getElementById('win-zone').classList.add('hidden');
+                    // 1. 搶答中：主持人不顯示輸入框
+                    if(!isHost) {
+                        document.getElementById('player-zone').classList.remove('hidden');
+                    }
+                    document.getElementById('win-notification').classList.add('hidden');
                     document.getElementById('ans-reveal').classList.add('hidden');
                     document.getElementById('host-actions').classList.add('hidden');
                     document.getElementById('ans-input').value = "";
@@ -188,44 +185,37 @@
                 }
             } else if(game.status === 'finished') {
                 goTo('view-result');
-                db.ref('players').once('value', function(pSnap) {
+                db.ref('players').once('value', pSnap => {
                     const ps = pSnap.val();
                     let list = [];
                     for(let k in ps) list.push({n: k, s: ps[k]});
-                    list.sort(function(a, b) { return b.s - a.s; });
-                    document.getElementById('leaderboard').innerHTML = list.map(function(p) {
-                        return '<div class="lb-item"><span>' + p.n + '</span><span>' + p.s + ' 分</span></div>';
-                    }).join('');
+                    list.sort((a,b) => b.s - a.s);
+                    document.getElementById('leaderboard').innerHTML = list.map(p => 
+                        `<div class="lb-item"><span>${p.n}</span><span>${p.s} 分</span></div>`
+                    ).join('');
                 });
             }
         });
 
-        // 搶答
         document.getElementById('btn-submit').onclick = function() {
-            const input = document.getElementById('ans-input').value.trim();
-            db.ref('game').once('value', function(snap) {
-                const game = snap.val();
-                if(input === game.qs[game.idx].answer && !game.winner) {
-                    db.ref('game/winner').transaction(function(current) {
-                        if (!current) {
-                            db.ref('players/' + myName).transaction(function(s) { return (s || 0) + 10; });
-                            return myName;
-                        }
-                        return current;
-                    });
-                } else if(input !== game.qs[game.idx].answer) {
-                    document.getElementById('feedback').innerText = "❌ 答錯囉！";
+            const val = document.getElementById('ans-input').value.trim();
+            db.ref('game').once('value', (snap) => {
+                const g = snap.val();
+                if(val === g.qs[g.idx].answer && !g.winner) {
+                    db.ref('game/winner').set(myName);
+                    db.ref('players/' + myName).transaction(s => (s || 0) + 10);
+                } else {
+                    document.getElementById('feedback').innerText = "❌ 不對喔，再猜猜！";
                 }
             });
         };
 
-        // 管理員操作
-        document.getElementById('btn-reveal').onclick = function() { db.ref('game/show').set(true); };
-        document.getElementById('btn-next').onclick = function() {
-            db.ref('game').once('value', function(snap) {
-                const game = snap.val();
-                if(game.idx + 1 < game.qs.length) {
-                    db.ref('game').update({ idx: game.idx + 1, winner: "", show: false });
+        document.getElementById('btn-reveal').onclick = () => db.ref('game/show').set(true);
+        document.getElementById('btn-next').onclick = () => {
+            db.ref('game').once('value', snap => {
+                const g = snap.val();
+                if(g.idx + 1 < g.qs.length) {
+                    db.ref('game').update({idx: g.idx + 1, winner: "", show: false});
                 } else {
                     db.ref('game/status').set('finished');
                 }
